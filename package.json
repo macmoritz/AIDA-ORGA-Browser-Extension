@@ -1,0 +1,23 @@
+{
+    "private": true,
+    "name": "AIDA ORGA Finishing Time Extension",
+    "description": "Adds a tile showing the earliest possible finishing time for the current day to the AIDA ORGA software",
+    "version": "1.0.0",
+    "license": "MIT",
+    "type": "module",
+    "devDependencies": {
+        "@types/chrome": "^0.0.287",
+        "extension": "^4.1.31",
+        "typescript": "^7.0.2"
+    },
+    "scripts": {
+        "dev": "extension dev",
+        "start": "extension start",
+        "build": "extension build",
+        "preview": "extension preview",
+        "build:chrome": "extension build --browser chrome",
+        "build:firefox": "extension build --browser firefox",
+        "build:edge": "extension build --browser edge"
+    },
+    "packageManager": "npm@12.2.0"
+}
