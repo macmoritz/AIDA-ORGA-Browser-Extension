@@ -11,11 +11,11 @@ Shows following data:
 
 ## TODO
 
-- [] format code
-- [] fix option page css (probably use some framework like svelte)
-- [] implement configuration for `location.hash`-check
-- [] implement configuration for flex time per day
-- [] break calculations based on time and law
+- [ ] format code
+- [ ] fix option page css (probably use some framework like svelte)
+- [ ] implement configuration for `location.hash`-check
+- [ ] implement configuration for flex time per day
+- [ ] break calculations based on time and law
 
 ## Commands
 
