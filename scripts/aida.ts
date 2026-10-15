@@ -1,14 +1,14 @@
 function getMinutesBetweenDates(start: Date, end: Date): number {
     const diff = end.getTime() - start.getTime();
 
-    return Math.floor(diff / 60000); 
+    return Math.floor(diff / 60000);
 }
 
-Date.prototype.toTwoDigitTimeString = function(): string {
+Date.prototype.toTwoDigitTimeString = function (): string {
     return this.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-Date.prototype.toTwoDigitTimedeltaString = function(): string {
+Date.prototype.toTwoDigitTimedeltaString = function (): string {
     return `${this.getUTCHours().toString().padStart(2, "0")}:${this.getUTCMinutes().toString().padStart(2, "0")}`;
 }
 
@@ -62,24 +62,24 @@ class CoreTime {
 }
 
 interface Booking {
-	Date: string;
-	TypeInfo: number;
-	caid: string;
-	day: number;
-	fjid: string;
+    Date: string;
+    TypeInfo: number;
+    caid: string;
+    day: number;
+    fjid: string;
 }
 
 interface Times {
-	timeLineActive: boolean[];
-	timeLineId: string[];
-	title: string[];
-	type: string[];
-	values: Record<string, [number, number]>;
+    timeLineActive: boolean[];
+    timeLineId: string[];
+    title: string[];
+    type: string[];
+    values: Record<string, [number, number]>;
 }
 
 class BookingsLastSevenDays {
-	bookings: Booking[];
-	times: Times[];
+    bookings: Booking[];
+    times: Times[];
 
     static url = "../rs/de.aidaorga.aida.ewas.taims/rpc/buchungen_7Tage";
 
@@ -92,7 +92,7 @@ class BookingsLastSevenDays {
         const today = new Date();
         const todayBookings = this.bookings
             .map(booking => new Date(booking.Date))
-            .filter(date => 
+            .filter(date =>
                 date.getFullYear() === today.getFullYear() &&
                 date.getMonth() === today.getMonth() &&
                 date.getDate() === today.getDate()
@@ -118,13 +118,13 @@ class BookingsLastSevenDays {
         if (!values) {
             return null;
         }
-        
+
         const requiredIndex = this.times[0].title.findIndex((key) => key == "Soll");
         if (requiredIndex == -1) {
             return null;
         }
-        
-        let finishingTimes: FinishingTimes = {normal: new Date(startingTime), earliest: new Date(startingTime), savedTimeDiff: Duration.fromMinutes(0), newSavedTime: Duration.fromMinutes(0)};
+
+        let finishingTimes: FinishingTimes = { normal: new Date(startingTime), earliest: new Date(startingTime), savedTimeDiff: Duration.fromMinutes(0), newSavedTime: Duration.fromMinutes(0) };
         let requiredMinutes = values[requiredIndex];
         console.log(`requiredMinutes ${requiredMinutes}`);
         finishingTimes.normal.setMinutes(finishingTimes.normal.getMinutes() + requiredMinutes);
@@ -133,7 +133,7 @@ class BookingsLastSevenDays {
         if (currentValueIndex != -1) {
             let minutesBooked = values[currentValueIndex];
             let minutesWorked: number = getMinutesBetweenDates(startingTime, new Date());
-        
+
             if (minutesBooked > minutesWorked) {
                 let diff = minutesBooked - minutesWorked;
                 finishingTimes.normal.setMinutes(finishingTimes.normal.getMinutes() - diff);
@@ -142,7 +142,7 @@ class BookingsLastSevenDays {
 
         // TODO: Improve and centralize break calculations
         finishingTimes.normal.setMinutes(finishingTimes.normal.getMinutes() + 30);
-        
+
         const savedIndex = this.times[0].title.findIndex((key) => key == "Soll");
         if (savedIndex == -1) {
             return finishingTimes;
@@ -167,11 +167,11 @@ class BookingsLastSevenDays {
 }
 
 interface Account {
-	timeLineActive: boolean[];
-	timeLineId: string[];
-	title: string[];
-	type: string[];
-	values: Record<string, [number]>;
+    timeLineActive: boolean[];
+    timeLineId: string[];
+    title: string[];
+    type: string[];
+    values: Record<string, [number]>;
 }
 
 class TrafficLightStatus {
@@ -222,7 +222,7 @@ class Duration {
     }
 
     toString(): string {
-       return `${this.sign}${String(this.hours).padStart(2, "0")}:${String(this.minutes).padStart(2, "0")}`;
+        return `${this.sign}${String(this.hours).padStart(2, "0")}:${String(this.minutes).padStart(2, "0")}`;
     }
 }
 
@@ -244,25 +244,25 @@ async function getDataFromApi<ApiResponseType>(url: string): Promise<ApiResponse
     const sessionId = JSON.parse(sessionId0);
 
     let json = await fetch(url, {
-    "headers": {
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "de-DE",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "x-ewas-sessionid": sessionId
-    },
-    "body": null,
-    "method": "GET",
-    "mode": "cors",
-    "credentials": "include"
+        "headers": {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "de-DE",
+            "cache-control": "no-cache",
+            "pragma": "no-cache",
+            "x-ewas-sessionid": sessionId
+        },
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
     })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status} ${response.statusText}`);
-        }
-        return response.text();
-    })
-    .then((body) => body.replace("while(1);", ""));
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} ${response.statusText}`);
+            }
+            return response.text();
+        })
+        .then((body) => body.replace("while(1);", ""));
 
     const apiResponse: ApiResponse<ApiResponseType> = JSON.parse(json) as ApiResponse<ApiResponseType>;
 
@@ -270,86 +270,86 @@ async function getDataFromApi<ApiResponseType>(url: string): Promise<ApiResponse
 }
 
 async function patchAida() {
-        if (!location.hash.includes("dashboard")) {
-                return;
+    let status;
+    let attempts = 0;
+    const maxAttempts = 20;
+
+    while (attempts++ < maxAttempts) {
+        status = document.querySelector("div[role=\"status\"]")
+
+        if (status?.textContent === "Geladen") {
+            break;
         }
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
 
-        let status;
-        let attempts = 0;
-        const maxAttempts = 10;
+    if (status?.textContent !== "Geladen") {
+        throw Error("Page did not finish loading");
+    }
 
-        while (attempts++ < maxAttempts) {
-                status = document.querySelector("div[role=\"status\"")
+    if (!location.hash.includes("dashboard")) {
+        return;
+    }
 
-                if (status?.textContent === "Geladen") {
-                        break;
-                }
-                await new Promise(resolve => setTimeout(resolve, 100));
-        }
+    const coreTime: CoreTime = new CoreTime(new Time(15, 30));
+    coreTime.setDayCoreTime(4, new Time(12));
 
-        if (status?.textContent !== "Geladen") {
-                throw Error("Page did not finish loading");
-        }
+    const data = new BookingsLastSevenDays(await getDataFromApi<BookingsLastSevenDays>(BookingsLastSevenDays.url));
+    console.log("BookingsLastSevenDays", data);
 
-        const coreTime: CoreTime = new CoreTime(new Time(15, 30));
-        coreTime.setDayCoreTime(4, new Time(12));
-
-        const data = new BookingsLastSevenDays(await getDataFromApi<BookingsLastSevenDays>(BookingsLastSevenDays.url));
-        console.log("BookingsLastSevenDays", data);
-
-        const dataTrafficLightStatus = new TrafficLightStatus(await getDataFromApi<TrafficLightStatus>(TrafficLightStatus.url));
-        console.log("TrafficLightStatus", dataTrafficLightStatus);
+    const dataTrafficLightStatus = new TrafficLightStatus(await getDataFromApi<TrafficLightStatus>(TrafficLightStatus.url));
+    console.log("TrafficLightStatus", dataTrafficLightStatus);
 
 
-        let dashboardElement= document.querySelector(".dashboard");
-        if (!dashboardElement) {
-                throw Error("Dashboard not found");
-        }
+    let dashboardElement = document.querySelector(".dashboard");
+    if (!dashboardElement) {
+        throw Error("Dashboard not found");
+    }
 
-        let firstRowElement = dashboardElement.firstElementChild;
-        if (!firstRowElement) {
-            throw Error("First row of dashboard grid not found");
-        }
-        let columnElements = firstRowElement.querySelectorAll("div.column");
-        if (!columnElements || columnElements.length < 1) {
-            throw Error("First column of first row in dashboard grid not found");
-        }
-        if (columnElements[1].firstElementChild) {
-            columnElements[0].appendChild(columnElements[1].firstElementChild.cloneNode(true));
-        }
-        let columnTitleElement = columnElements[0].querySelectorAll("h3.ng-scope > span")[0];
-        let columnContentElement = columnElements[0].querySelectorAll(".dashboard-widget")[0];
+    let firstRowElement = dashboardElement.firstElementChild;
+    if (!firstRowElement) {
+        throw Error("First row of dashboard grid not found");
+    }
+    let columnElements = firstRowElement.querySelectorAll("div.column");
+    if (!columnElements || columnElements.length < 1) {
+        throw Error("First column of first row in dashboard grid not found");
+    }
+    if (columnElements[1].firstElementChild) {
+        columnElements[0].appendChild(columnElements[1].firstElementChild.cloneNode(true));
+    }
+    let columnTitleElement = columnElements[0].querySelectorAll("h3.ng-scope > span")[0];
+    let columnContentElement = columnElements[0].querySelectorAll(".dashboard-widget")[0];
 
-        columnTitleElement.innerHTML = "Feierabend";
-        columnContentElement.innerHTML = "";
+    columnTitleElement.innerHTML = "Feierabend";
+    columnContentElement.innerHTML = "";
 
-        const finishingTimes = data.getTodayFinishingTimes(dataTrafficLightStatus, coreTime);
+    const finishingTimes = data.getTodayFinishingTimes(dataTrafficLightStatus, coreTime);
 
-        if (finishingTimes != null) { 
-            let p1 = document.createElement("p");
-            p1.textContent = `Regulärer Feierabend: ${finishingTimes.normal.toTwoDigitTimeString()} Uhr`;
-            columnContentElement.appendChild(p1);
+    if (finishingTimes != null) {
+        let p1 = document.createElement("p");
+        p1.textContent = `Regulärer Feierabend: ${finishingTimes.normal.toTwoDigitTimeString()} Uhr`;
+        columnContentElement.appendChild(p1);
 
-            let hr = document.createElement("hr");
-            columnContentElement.appendChild(hr);
+        let hr = document.createElement("hr");
+        columnContentElement.appendChild(hr);
 
-            let p3 = document.createElement("p");
-            p3.textContent = `Frühester Feierabend: ${finishingTimes.earliest.toTwoDigitTimeString()} Uhr`;
-            columnContentElement.appendChild(p3);
+        let p3 = document.createElement("p");
+        p3.textContent = `Frühester Feierabend: ${finishingTimes.earliest.toTwoDigitTimeString()} Uhr`;
+        columnContentElement.appendChild(p3);
 
-            let p4 = document.createElement("p");
-            p4.textContent = `Anpassung Flexzeit: ${finishingTimes.savedTimeDiff.toString()} Stunden`;
-            columnContentElement.appendChild(p4);
+        let p4 = document.createElement("p");
+        p4.textContent = `Anpassung Flexzeit: ${finishingTimes.savedTimeDiff.toString()} Stunden`;
+        columnContentElement.appendChild(p4);
 
-            let p5 = document.createElement("p");
-            p5.textContent = `Flexzeit morgen: ${finishingTimes.newSavedTime.toString()} Stunden`;
-            columnContentElement.appendChild(p5);
-        }
+        let p5 = document.createElement("p");
+        p5.textContent = `Flexzeit morgen: ${finishingTimes.newSavedTime.toString()} Stunden`;
+        columnContentElement.appendChild(p5);
+    }
 }
 
 if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", patchAida);
+    document.addEventListener("DOMContentLoaded", patchAida);
 } else {
-        patchAida();
+    patchAida();
 }
 
